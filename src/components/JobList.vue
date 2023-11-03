@@ -7,7 +7,10 @@
             <v-card-text>
               <p class="text-h5 text--primary font-weight-black">{{ job.title }}</p>
               <p class="text-h6 text--primary">{{ job.company }}</p>
+              <br>
               <p>{{ job.location }}</p>
+              <br>
+              <p>Created at: {{ formatCreatedAt(job.createdAt) }}</p>
             </v-card-text>
             <v-card-actions>
               <v-row align="center" justify="center">
@@ -21,10 +24,6 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-row align="center" justify="center">
-      <button v-if="loadedItems < jobs.length" @click="loadMore">See More</button>
-    </v-row>
-
   </div>
 </template>
 
@@ -46,12 +45,33 @@ export default {
       .catch(error => {
         console.error('Erro ao buscar serviços:', error.message);
       });
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
+    handleScroll() {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset;
+      const clientHeight = window.innerHeight;
+
+      if (scrollTop + clientHeight >= scrollHeight - 100) {
+        this.loadMore();
+      }
+    },
     loadMore() {
       if (this.loadedItems < this.jobs.length) {
         this.loadedItems += 10;
       }
+    },
+    // eslint-disable-next-line no-unused-vars
+    formatCreatedAt(createdAt) {
+      const date = new Date(createdAt);
+      const dia = String(date.getDate()).padStart(2, '0');
+      const mes = String(date.getMonth() + 1).padStart(2, '0');
+      const ano = date.getFullYear();
+      return `${dia}/${mes}/${ano}`;
     }
   }
 };
