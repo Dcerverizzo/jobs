@@ -1,5 +1,21 @@
 <template>
   <div>
+    <v-card class="mx-auto" color="grey-lighten-3" max-width="400">
+      <v-card-text>
+        <v-text-field
+          v-model="searchQuery"
+          :loading="loading"
+          density="compact"
+          variant="solo"
+          label="Search Job"
+          append-inner-icon="mdi-magnify"
+          single-line
+          hide-details
+          @onClick="filterItems"
+        ></v-text-field>
+      </v-card-text>
+    </v-card>
+
     <v-container>
       <v-row>
         <v-col
@@ -19,7 +35,7 @@
               <br />
               <p>{{ job.location }}</p>
               <br />
-              <p>Created at: {{ formatCreatedAt(job.createdAt) }}</p>
+              <p>Created at: {{ this.formatCreatedAt(job.createdAt) }}</p>
             </v-card-text>
             <v-card-actions>
               <v-row align="center" justify="center">
@@ -40,14 +56,15 @@
     </v-container>
   </div>
 </template>
-
 <script>
 import axios from "axios";
+// eslint-disable-next-line no-unused-vars
 import _ from "lodash";
 export default {
   data() {
     return {
       jobs: [],
+      searchQuery: "",
       jobsFiltered: [],
       loadedItems: 10,
     };
@@ -64,16 +81,24 @@ export default {
       });
     window.addEventListener("scroll", this.handleScroll);
   },
+  watch: {
+    searchQuery: function (newQuery) {
+      this.filterItems(newQuery);
+    },
+  },
   beforeDestroy() {
     window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
-    // eslint-disable-next-line no-undef
-    filterItems: _.debounce(function (query) {
-      return this.jobsFiltered.filter(function (el) {
-        return el.toLowerCase().indexOf(query.toLowerCase()) > -1;
-      });
-    }, 300),
+    filterItems(query) {
+      if (query) {
+        this.jobs = this.jobs.filter((job) =>
+          job.title.toLowerCase().includes(query.toLowerCase())
+        );
+      } else {
+        this.jobs = this.jobsFiltered;
+      }
+    },
     handleScroll() {
       const scrollHeight = document.documentElement.scrollHeight;
       const scrollTop = window.pageYOffset;
@@ -88,7 +113,6 @@ export default {
         this.loadedItems += 10;
       }
     },
-    // eslint-disable-next-line no-unused-vars
     formatCreatedAt(createdAt) {
       const date = new Date(createdAt);
       const dia = String(date.getDate()).padStart(2, "0");

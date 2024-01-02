@@ -7,13 +7,13 @@
 
 <script>
 import JobsList from "./components/JobList.vue";
-import Search from "./components/Search.vue";
+// import Search from "./components/Search.vue";
 
 export default {
   name: "App",
   components: {
     JobsList,
-    Search,
+    // Search,
   },
 };
 </script>

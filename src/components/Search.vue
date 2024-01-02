@@ -28,6 +28,7 @@ export default {
       setTimeout(() => {
         this.loading = false;
         this.loaded = true;
+        // aqui ele faz algo
       }, 2000);
     },
   },
