@@ -1,18 +1,21 @@
 <template>
   <div id="app">
-    <JobsList/>
+    <Search />
+    <JobsList />
   </div>
 </template>
 
 <script>
-import JobsList from './components/JobList.vue'
+import JobsList from "./components/JobList.vue";
+import Search from "./components/Search.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    JobsList
-  }
-}
+    JobsList,
+    Search,
+  },
+};
 </script>
 
 <style>
